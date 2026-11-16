@@ -452,7 +452,7 @@ class Day(ESPNModel):
 
 
 class Scoreboard(ESPNModel):
-    """A league's scoreboard for a day, week or range of dates."""
+    """A league's scoreboard for a day, a week, a month or a year."""
 
     events: tuple[Event, ...] = ()
     leagues: tuple[League, ...] = ()

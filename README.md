@@ -79,8 +79,8 @@ Out of season, most leagues' scoreboards show the nearest day with events, which
 empty day. College scoreboards show only featured games unless given a group: `groups=50` is all of Division I men's
 basketball, and `groups=80` all of FBS football.
 
-On 2026-11-16 ESPN refused every scoreboard asked for a range of dates (`dates=(start, end)`) with a 400, though it
-took a single day, a month (`dates="202611"`) and a year (`dates="2026"`).
+ESPN refuses a scoreboard for a range of days (`dates="20261101-20261107"`) with a 400, though older guides to
+the API show it working. It takes a single day, a month (`dates="202611"`) and a year (`dates="2026"`).
 
 ## Sports
 

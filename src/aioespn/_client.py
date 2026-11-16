@@ -19,8 +19,8 @@ from aioespn.teams import TeamDetail, TeamSchedule, _TeamFeed, _TeamsFeed
 DEFAULT_BASE_URL = URL("https://site.api.espn.com/apis/")
 DEFAULT_USER_AGENT = "aioespn/0.1 (+https://github.com/regulad/aioespn)"
 
-type Dates = date | tuple[date, date] | str
-"""The dates a scoreboard shows: a day, an inclusive range of days, or a string in one of ESPN's own forms."""
+type Dates = date | str
+"""The dates a scoreboard shows: a day, or a string in one of ESPN's own forms, such as a month as ``"YYYYMM"``."""
 
 _SLUG = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
@@ -33,9 +33,6 @@ def _segment(kind: str, value: str) -> str:
 
 
 def _dates(dates: Dates) -> str:
-    if isinstance(dates, tuple):
-        start, end = dates
-        return f"{start:%Y%m%d}-{end:%Y%m%d}"
     if isinstance(dates, date):
         return f"{dates:%Y%m%d}"
     return dates
@@ -127,9 +124,9 @@ class ESPNClient:
         with events, which can be months away.
 
         :param league: The league's slug, such as ``nfl``, ``eng.1`` or ``pga``.
-        :param dates: The day to show, or an inclusive range of days. ESPN also takes a month as ``"YYYYMM"`` and a
-            year as ``"YYYY"``. On 2026-11-16 ESPN answered every range with a 400, which raises
-            :class:`aiohttp.ClientResponseError`, while it took months and years.
+        :param dates: The day to show, or a month as ``"YYYYMM"`` or a year as ``"YYYY"``. ESPN refuses a range of
+            days (``"YYYYMMDD-YYYYMMDD"``) with a 400, which raises :class:`aiohttp.ClientResponseError`: fetch each
+            day, or the month, instead.
         :param groups: Which group's games to show. College scoreboards show only featured games without one: ``50``
             shows all of Division I men's basketball and ``80`` all of FBS football.
         :param limit: The most events to return. ESPN returns at most 100 without one.

@@ -81,14 +81,12 @@ async def test_scoreboard_query(api: tuple[TestServer, Requests]) -> None:
 
     async with ESPNClient(user_agent="MyBot/1.0", base_url=server.make_url("/apis/")) as client:
         await client.scoreboard(Sport.FOOTBALL, "nfl", dates=date(2026, 11, 15))
-        await client.scoreboard(Sport.FOOTBALL, "nfl", dates=(date(2026, 11, 13), date(2026, 11, 17)))
         await client.scoreboard(Sport.FOOTBALL, "nfl", dates="202611", limit=500)
         await client.scoreboard(Sport.FOOTBALL, "nfl", week=10, season_type=SeasonType.REGULAR_SEASON, groups=80)
         board = await client.scoreboard(Sport.TENNIS, "atp", season_type=3)
 
     assert [dict(request.query) for request in requests] == [
         {"dates": "20261115"},
-        {"dates": "20261113-20261117"},
         {"dates": "202611", "limit": "500"},
         {"groups": "80", "week": "10", "seasontype": "2"},
         {"seasontype": "3"},
