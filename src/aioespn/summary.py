@@ -71,7 +71,7 @@ class Commentary(ESPNModel):
 
     sequence: int | None = None
     time: Clock | None = None
-    text: str
+    text: str | None = None
     play: Play | None = None
 
 
@@ -117,7 +117,7 @@ class Boxscore(ESPNModel):
 class Official(ESPNModel):
     """A referee, umpire or other official."""
 
-    display_name: str
+    display_name: str | None = None
     position: str | None = None
     """Such as "Referee" or "Down Judge"."""
 
