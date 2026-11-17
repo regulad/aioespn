@@ -19,6 +19,16 @@ class PlayType(ESPNModel):
     abbreviation: str | None = None
     type: str | None = None
     """A slug for the kind of play, such as ``goal`` or ``yellow-card``. Soccer and baseball give one."""
+    penalty_type: str | None = None
+    """A hockey penalty's kind, such as "Minor", "Major" or "Misconduct". Hockey names a penalty's play after the
+    infraction, such as "Tripping", and gives it this and :attr:`penalty_minutes`."""
+    penalty_minutes: int | None = None
+    """How long a hockey penalty is, in minutes."""
+
+    @property
+    def is_penalty(self) -> bool:
+        """Whether the play is a hockey penalty."""
+        return self.penalty_type is not None or self.penalty_minutes is not None
 
 
 class Period(ESPNModel):

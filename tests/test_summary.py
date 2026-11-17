@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 import pytest
 from conftest import FIXTURES, fixture
 
-from aioespn import State, Summary
+from aioespn import Play, State, Summary
 
 
 def summary(name: str) -> Summary:
@@ -77,6 +77,25 @@ def test_hockey_goals() -> None:
         ("Macklin Celebrini", "assister"),
     ]
     assert nhl.game_info is not None and nhl.game_info.officials[0].position == "Referee"
+
+
+def test_hockey_penalty() -> None:
+    # A play from a live game's summary, as ESPN served it on 2026-11-17, without its coordinates and headshots.
+    penalty = Play.model_validate_json("""{"id": "401892726000003490", "sequenceNumber": "95",
+            "type": {"id": "55", "text": "Tripping", "abbreviation": "Tripping", "penaltyMinutes": "2",
+                     "penaltyType": "Minor"},
+            "text": "Jacob Fowler Tripping against Gabe Perreault served by Cole Caufield",
+            "awayScore": 0, "homeScore": 0, "period": {"number": 1, "displayValue": "1st"},
+            "clock": {"displayValue": "18:36"}, "scoringPlay": false, "scoreValue": 0, "team": {"id": "10"},
+            "participants": [{"athlete": {"id": "5188437", "displayName": "Jacob Fowler"}},
+                             {"athlete": {"id": "5149204", "displayName": "Gabe Perreault"}}],
+            "wallclock": "2026-11-17T01:24:09Z"}""")
+    assert penalty.type is not None
+    assert (penalty.type.penalty_type, penalty.type.penalty_minutes) == ("Minor", 2)
+    assert penalty.type.is_penalty and not penalty.is_scoring
+    # Other plays aren't penalties.
+    goal = summary("summary-hockey-nhl.json").scoring_summary[0]
+    assert goal.type is not None and not goal.type.is_penalty
 
 
 def test_baseball() -> None:
